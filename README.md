@@ -1,9 +1,6 @@
 # cc_net
 
-Tools to download and clean Common Crawl as introduced in our paper [CCNet](https://arxiv.org/abs/1911.00359).
-
-If you found these resources useful, please consider citing:
-
+A WIP fork of [CCNet](https://arxiv.org/abs/1911.00359), that will eventually create a Minerva-style dataset of mathematical text from the web.
 ```
 @inproceedings{wenzek2020ccnet,
   title={CCNet: Extracting High Quality Monolingual Datasets from Web Crawl Data},
