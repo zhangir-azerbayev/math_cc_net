@@ -20,22 +20,29 @@ from bs4 import BeautifulSoup  # type: ignore
 
 from cc_net import jsonql
 
-WET_URL_ROOT = "https://commoncrawl.s3.amazonaws.com"
+import boto3
+import gzip
 
+BUCKET_NAME = "commoncrawl"
 
 logger = logging.getLogger(__name__)
 
 
 def cc_wet_paths_url(dump_id: str) -> str:
-    return "/".join([WET_URL_ROOT, "crawl-data", "CC-MAIN-" + dump_id, "wet.paths.gz"])
+    return "/".join(["crawl-data", "CC-MAIN-" + dump_id, "wet.paths.gz"])
 
 
 @functools.lru_cache()
 def cc_segments(dump_id: str, cache_dir: Path = None) -> List[str]:
-    wet_paths = cc_wet_paths_url(dump_id)
+    s3 = boto3.client('s3')
+    object_key = cc_wet_paths_url(dump_id)
+
     cache_dir = cache_dir or jsonql._tmp_dir()
     wet_paths_cache = cache_dir / f"wet_{dump_id}.paths.gz"
-    f = jsonql.open_remote_file(wet_paths, cache=wet_paths_cache)
+    
+    response = s3.get_object(Bucket=BUCKET_NAME, Key=object_key)
+    f = gzip.decompress(response['Body'].read()).decode()
+    print(f"f FILE: {f}")
     return [segment.strip() for segment in f]
 
 
@@ -174,14 +181,12 @@ class CCSegmentsReader(Iterable[dict]):
         self.cache_dir = cache_dir
         self.retrieved_segments = 0
 
-    def segment_url(self, segment: str):
-        return "/".join((WET_URL_ROOT, segment))
-
     @property
     def segments(self) -> Sequence[str]:
         return self._segments
 
     def open_segment(self, segment: str) -> Iterable[str]:
+        # TODO: this method also needs to be changed 
         url = self.segment_url(segment)
         file: Optional[Path] = None
         if self.cache_dir:
