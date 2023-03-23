@@ -22,6 +22,9 @@ from cc_net import jsonql
 
 import boto3
 import gzip
+# WET_URL_ROOT = "https://commoncrawl.s3.amazonaws.com"
+# Changed by Albert Q. Jiang due to common crawl domain change
+WET_URL_ROOT = "https://data.commoncrawl.org"
 
 BUCKET_NAME = "commoncrawl"
 
