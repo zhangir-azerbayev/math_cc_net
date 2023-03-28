@@ -1324,7 +1324,8 @@ def _tmp(output: Path) -> Path:
 def _tmp_dir() -> Path:
     job_id = os.environ.get("SLURM_JOB_ID")
     if job_id:
-        return Path("/scratch/slurm_tmpdir") / job_id
+        # return Path("/scratch/slurm_tmpdir") / job_id
+        return Path("/tmp/slurm_tmpdir") / job_id
 
     checkpoint = Path("/checkpoint") / os.environ.get("USER", "")
     if checkpoint.exists():
