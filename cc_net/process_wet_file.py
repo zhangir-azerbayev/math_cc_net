@@ -23,6 +23,14 @@ from cc_net import jsonql
 import boto3
 import gzip
 
+FILTER_KEYWORDS = [
+        "<math", #MathML
+        "MathJax-Element", # MathJax
+        "<span class=math-container", # alt mathjax
+        "<script type=\"text/x-mathjax-config\"" # not sure if redundant given above
+        "/katex.min.css" # katex 
+        ]
+
 BUCKET_NAME = "commoncrawl"
 
 logger = logging.getLogger(__name__)
